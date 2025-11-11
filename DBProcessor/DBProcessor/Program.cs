@@ -10,11 +10,11 @@ public class Program
     {
         DatabaseWrapper dbWrapper = new DatabaseWrapper(Secrets.DB_PATH);
 
-        await dbWrapper.ConnectRaw();
+        //await dbWrapper.ConnectRaw(Secrets.DB_TABLE, Secrets.DB_COLLECTION);
 
         Console.WriteLine("Inicializando conexão com o servidor");
 
-        var data = await dbWrapper.ConnectToDB<ApplicantData>(Secrets.DB_TABLE, Secrets.DB_COLLECTION);
+        var data = await dbWrapper.ConnectToDB<Transaction>(Secrets.DB_TABLE, Secrets.DB_COLLECTION);
 
         Console.WriteLine("🚀 Iniciando processamento...");
 
