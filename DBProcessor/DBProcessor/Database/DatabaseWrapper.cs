@@ -28,10 +28,7 @@ namespace DBProcessor.Database
             var data = await collection.Find(_ => true).Limit(Secrets.Secrets.NUMBER_OF_TRANSACTIONS).ToListAsync();
 
             Console.WriteLine($"\n✅ Encontrados {data.Count} documentos:");
-            foreach (var doc in data)
-            {
-                Console.WriteLine(doc.ToJson());
-            }
+            
 
 
             return data;
