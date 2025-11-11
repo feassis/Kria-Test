@@ -1,0 +1,10 @@
+# Ignore arquivos temporários e de build
+.vs/
+bin/
+obj/
+
+# Ignore arquivos de banco de dados locais e cache
+*.db
+*.db-shm
+*.db-wal
+*.vsidx
