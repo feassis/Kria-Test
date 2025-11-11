@@ -8,3 +8,8 @@ obj/
 *.db-shm
 *.db-wal
 *.vsidx
+
+
+#Ignore Secrets
+
+DBProcessor/DBProcessor/Secrets
