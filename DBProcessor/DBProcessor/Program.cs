@@ -1,7 +1,9 @@
 ﻿using DBProcessor.Data_Classes;
 using DBProcessor.Database;
 using DBProcessor.DataProcessor;
+using DBProcessor.DataSender;
 using DBProcessor.Secrets;
+using MongoDB.Bson;
 
 public class Program
 {
@@ -20,7 +22,12 @@ public class Program
         ApplicantDataBuilder applicantDataBuilder = new ApplicantDataBuilder(Secrets.APPLICANT_NAME,
             DateTime.Now.ToString("dd/MM/yyyy"), Secrets.ARCHIVE_NUMBER);
 
-        applicantDataBuilder.ProcessTransactions(data);
+        var applycantData = applicantDataBuilder.ProcessTransactions(data);
 
+        Console.WriteLine(applycantData.ToJson());
+
+        DataSender sender = new DataSender();
+
+        await sender.SendData(applycantData);
     }
 }

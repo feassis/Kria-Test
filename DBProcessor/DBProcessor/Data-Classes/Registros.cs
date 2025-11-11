@@ -1,11 +1,13 @@
 ﻿
+using System;
+
 namespace DBProcessor.Data_Classes
 {
     public class Registros
     {
         public string GUID { get; set; }
-        public int CodigoPracaPedagio { get; set; }
-        public int CodigoCabine { get; set; }
+        public string CodigoPracaPedagio { get; set; }
+        public string CodigoCabine { get; set; }
         public string Instante { get; set; }
         public string Sentido { get; set; }
         public string TipoVeiculo { get; set; }
@@ -19,8 +21,8 @@ namespace DBProcessor.Data_Classes
         public Registros(Transaction transaction)
         {
             GUID = ConvertObjectIdToGuidLike(transaction.Id);
-            CodigoPracaPedagio = int.Parse(transaction.CodigoPracaPedagio);
-            CodigoCabine = transaction.CodigoCabine;
+            CodigoPracaPedagio = int.Parse(transaction.CodigoPracaPedagio).ToString();
+            CodigoCabine = transaction.CodigoCabine.ToString();
             Instante = transaction.Instante;
             Sentido = ConverterSentido(transaction.Sentido);
             TipoVeiculo = ConverterTipoVeiculo(transaction.Rodagem);
@@ -30,18 +32,6 @@ namespace DBProcessor.Data_Classes
             ValorDevido = FormatDecimal(transaction.ValorDevido);
             ValorArrecadado = FormatDecimal(transaction.ValorArrecadado);
             MultiplicadorTarifa = CalculateTariffModifier(transaction.Rodagem, transaction.Isento);
-            Console.WriteLine($"GUID {GUID}");
-            Console.WriteLine($"CodigoPracaPedagio {CodigoPracaPedagio}");
-            Console.WriteLine($"CodigoCabine {CodigoCabine}");
-            Console.WriteLine($"Instante {Instante}");
-            Console.WriteLine($"Sentido {Sentido}");
-            Console.WriteLine($"Tipo Veiculo {TipoVeiculo}");
-            Console.WriteLine($"Isento {Isento}");
-            Console.WriteLine($"Evasao {Evasao}");
-            Console.WriteLine($"Tipo de Cobença Efetuada {TipoCobrancaEfetuada}");
-            Console.WriteLine($"Valor Devido {ValorDevido}");
-            Console.WriteLine($"Valor Arrecadado {ValorArrecadado}");
-            Console.WriteLine($"Multiplicador de Tarifa {MultiplicadorTarifa}");
         }
 
 
@@ -65,7 +55,7 @@ namespace DBProcessor.Data_Classes
             return formatted;
         }
 
-        string ConverterSentido(int sentido)
+        public static string ConverterSentido(int sentido)
         {
             return sentido switch
             {
@@ -75,7 +65,7 @@ namespace DBProcessor.Data_Classes
             };
         }
 
-        string ConverterTipoVeiculo(int rodagem)
+        public static string ConverterTipoVeiculo(int rodagem)
         {
             return rodagem switch
             {
@@ -86,7 +76,7 @@ namespace DBProcessor.Data_Classes
             };
         }
 
-        string ConvertIsento(int value)
+        public static string ConvertIsento(int value)
         {
             return value switch
             {
@@ -96,7 +86,7 @@ namespace DBProcessor.Data_Classes
             };
         }
 
-        string ConvertEvasao(int value)
+        public static string ConvertEvasao(int value)
         {
             return value switch
             {
@@ -106,7 +96,7 @@ namespace DBProcessor.Data_Classes
             };
         }
 
-        string ConvertTipoCobrancaToString(int tipo)
+        public static string ConvertTipoCobrancaToString(int tipo)
         {
             return tipo switch
             {
@@ -117,34 +107,50 @@ namespace DBProcessor.Data_Classes
             };
         }
 
-        string FormatDecimal(decimal valor)
+        public static string FormatDecimal(decimal valor)
         {
             return valor.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        string CalculateTariffModifier(int type, int exempt)
+        public static string CalculateTariffModifier(int type, int exempt)
         {
             if(type == 3 & exempt == 1)
             {
                 return "0";
             }
 
-            if (type == 3 & exempt == 1)
+            if (type == 3 & exempt == 2)
             {
-                return "0";
+                return "0.5";
             }
 
             if(type == 1)
             {
-                return "1.5";
+                return GetRandomMultiplier1to2().ToString();
             }
 
             if(type == 2)
             {
-                return "3";
+                return GetRandomIntegerBetween2And20().ToString();
             }
 
             throw new ArgumentException($"Valor inválido! type {type} | exempt {exempt}");
         }
+
+        public static decimal GetRandomMultiplier1to2()
+        {
+            decimal[] valores = { 1.0m, 1.5m, 2.0m };
+            Random random = new Random();
+            int index = random.Next(valores.Length);
+            return valores[index];
+        }
+
+        public static int GetRandomIntegerBetween2And20()
+        {
+            Random random = new Random();
+            return random.Next(2, 21); 
+        }
     }
+
+
 }
